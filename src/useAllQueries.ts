@@ -2,19 +2,23 @@ import { useEffect, useState, useRef } from "react";
 import { QueryClient } from "@tanstack/react-query";
 import { deepEqual } from "fast-equals";
 import { Query } from "@tanstack/react-query";
+import useMySocket from "./useMySocket ";
+import { User } from "./_types/User";
 export interface ExtendedQuery extends Query {
   observersCount?: number; //  getObserversCount()
   isQueryStale?: boolean; // isStale()
 }
 interface Props {
-  // Call back function used to send all queries to websocket server
-  callBack?: (queries: ExtendedQuery[]) => void;
   queryClient: QueryClient | any;
+  query: User;
+  socketURL: string;
 }
-export function useAllQueries({
-  callBack,
-  queryClient,
-}: Props): ExtendedQuery[] {
+export function useAllQueries({ queryClient, query, socketURL }: Props) {
+  const { connect, disconnect, isConnected, socket } = useMySocket({
+    query,
+    queryClient,
+    socketURL,
+  });
   const [queries, setQueries] = useState<ExtendedQuery[]>([]);
   // Store the previous data states for comparison
   const prevDataRef = useRef<Array<any>>([]);
@@ -50,7 +54,8 @@ export function useAllQueries({
         });
         setQueries(allQueries);
         prevDataRef.current = currentDataStates; // Update the ref for future comparison
-        callBack && callBack(newAllQueries); // Callback - Broadcast the changes
+        // Broadcast new queries
+        socket.emit("allQueries", newAllQueries);
       }
     };
     // Perform an initial update
@@ -60,7 +65,10 @@ export function useAllQueries({
 
     // Cleanup the subscription when the component unmounts
     return () => unsubscribe();
-  }, [queryClient, callBack]);
-
-  return queries;
+  }, [queryClient]);
+  // Broadcast queries again if we re-connect
+  useEffect(() => {
+    socket.emit("allQueries", queries);
+  }, [isConnected]);
+  return { queries, connect, disconnect, isConnected, socket };
 }

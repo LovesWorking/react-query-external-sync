@@ -25,7 +25,8 @@
   "author": "LovesWorking (https://github.com/LovesWorking)",
   "license": "MIT",
   "dependencies": {
-    "fast-equals": "^5.0.1"
+    "fast-equals": "^5.0.1",
+    "socket.io-client": "^4.7.4"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.17.19",
