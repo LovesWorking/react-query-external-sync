@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { QueryClient } from "@tanstack/react-query";
 import { Command } from "./_types/Command";
 import handleCommands from "./_util/handleCommands";
+import { ClientQuery } from "./_types/ClientQuery";
 
 let socket = null as Socket | null; // Module-level variable to store the socket instance
 interface Props {
-  query: User;
+  query: ClientQuery;
   socketURL: string;
   queryClient: QueryClient | any;
 }

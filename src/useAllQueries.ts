@@ -4,13 +4,14 @@ import { deepEqual } from "fast-equals";
 import { Query } from "@tanstack/react-query";
 import useMySocket from "./useMySocket ";
 import { User } from "./_types/User";
+import { ClientQuery } from "./_types/ClientQuery";
 export interface ExtendedQuery extends Query {
   observersCount?: number; //  getObserversCount()
   isQueryStale?: boolean; // isStale()
 }
 interface Props {
   queryClient: QueryClient | any;
-  query: User;
+  query: ClientQuery;
   socketURL: string;
 }
 export function useAllQueries({ queryClient, query, socketURL }: Props) {
