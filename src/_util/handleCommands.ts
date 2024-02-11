@@ -34,7 +34,6 @@ export default function handleCommands({
       break;
     case "Data Update":
       const oldData = query.state.data;
-      console.log("Data Update new value =", command.newValue);
       // New data to set
       const serverNewData = command.newValue;
       // Set the new data

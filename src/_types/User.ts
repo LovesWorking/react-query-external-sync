@@ -1,8 +1,8 @@
 import { ExtendedQuery } from "./QueryExternal";
 export interface User {
-  id: String;
-  clientType: String;
-  username: String;
-  userType: String;
+  id: string;
+  clientType: string;
+  username: string;
+  userType: string;
   allQueries: ExtendedQuery[];
 }

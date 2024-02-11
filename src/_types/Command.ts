@@ -1,5 +1,5 @@
 export interface Command {
-  queryKey: String;
+  queryKey: string;
   command:
     | "Refetch"
     | "Invalidate"

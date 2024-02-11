@@ -15,7 +15,7 @@ interface Props {
   socketURL: string;
 }
 export function useAllQueries({ queryClient, query, socketURL }: Props) {
-  const { connect, disconnect, isConnected, socket } = useMySocket({
+  const { connect, disconnect, isConnected, socket, users } = useMySocket({
     query,
     queryClient,
     socketURL,
@@ -44,7 +44,6 @@ export function useAllQueries({ queryClient, query, socketURL }: Props) {
       }));
       // Check if the specific parts of the state of any query have changed using deep comparison
       if (!deepEqual(prevDataRef.current, currentDataStates)) {
-        console.log("!!!!!Queries changed!!!!!!");
         // add observersCount and isQueryStale to response as they're functions the server dashboard client can't call
         const newAllQueries = allQueries.map((query: Query) => {
           return {
@@ -71,5 +70,5 @@ export function useAllQueries({ queryClient, query, socketURL }: Props) {
   useEffect(() => {
     socket.emit("allQueries", queries);
   }, [isConnected]);
-  return { queries, connect, disconnect, isConnected, socket };
+  return { queries, connect, disconnect, isConnected, socket, users };
 }

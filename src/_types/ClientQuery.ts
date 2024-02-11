@@ -1,5 +1,5 @@
 export interface ClientQuery {
-  username: String;
-  userType: String;
-  clientType: String;
+  username: string;
+  userType: string;
+  clientType: "client" | "server";
 }
