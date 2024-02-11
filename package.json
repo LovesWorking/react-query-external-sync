@@ -4,6 +4,9 @@
   "description": "A tool for syncing React Query state to an external React Query Dev Tools",
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
+  "files": [
+    "dist"
+  ],
   "types": "dist/types/index.d.ts",
   "scripts": {
     "build": "tsc --outDir dist --declarationDir dist/types --declaration true && rollup -c rollup.config.mjs",
