@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Welcome to **React Query External Sync**! This tool is designed for developers and QA teams to remotely sync and manage React Query state via an external dashboard. It's particularly beneficial for React Native projects, where React Query Dev Tools integration is absent.
+Welcome to **React Query External Sync**! This tool is designed for developers and QA teams to remotely manage React Query state via an external dashboard. It's particularly beneficial for React Native projects, where React Query Dev Tools integration is absent.
 
 ## Features
 
@@ -14,23 +14,23 @@ Welcome to **React Query External Sync**! This tool is designed for developers a
 
 ### Prerequisites
 
-Your client app should include:
-- React version 18 or above
-- React Query version 5.17.19 or above
-Your socket io server should include:
-- socket.io version 4.7.4 or above
+#### Client Application:
+- React version 18 or above.
+- React Query version 5.17.19 or above.
 
+#### Socket IO Server:
+- Socket.io version 4.7.4 or above.
 
 ### Installation
 
-To install the package, run the following command in the project where you want to remotley manage it's state:
+Install the package using npm by running the following command in your client project directory:
 
 ```bash
 npm install react-query-external-sync
 ```
 
-## Steps - client application
-- Import useAllQueries and use the hook in your client application:
+## Usage
+- Import the useAllQueries hook and utilize it within your client application to enable real-time synchronization with the external dashboard.
 
 ```javascript
 import { useAllQueries } from "react-query-external-sync";
@@ -46,25 +46,23 @@ const { connect, disconnect, isConnected, queries, socket, users } =
       socketURL: "http://localhost:4000",
     });
 ```
-- **query**: An object containing user information.
-- **queryClient**: Your React Query client instance.
-- **socketURL**: The URL of your socket io server.
+- **query**: Contains user information for identifying and managing connections in the dashboard.
+- **queryClient**: Your application's React Query client instance.
+- **socketURL**: The URL where your Socket.io server is hosted.
 
  ### Connecting to the Server
 
-Use the `connect` function to establish a connection to the socket server. Check the connection status with `isConnected`. This will allow the app to sync all data between itself and the external dev tools.
+Utilize the connect function to initiate a connection with the socket server. Monitor the connection status using isConnected.
 
 ### Disconnecting from the Server
 
-Use the `disconnect` function to terminate the connection.
+Terminate the connection to the socket server by invoking the disconnect function.
 
 ### Accessing Queries
 
-The `queries` property provides access to the synced queries data. Use this for debugging.
+The queries property grants access to the synchronized query data, facilitating debugging and state management.
 
-### That's it for the client part! Now we'll need to setup the external dashboard!
-
-### Installation
+### Socket IO Server
 
 Run the following command in your Node server directory:
 
@@ -72,8 +70,9 @@ Run the following command in your Node server directory:
 npm install react-query-external-dash
 ```
 
-## Steps - Socket IO Server
-- Import and use the socketHandle function after you create a new SocketIOServer in your server.(ts/js) file:
+## Socket IO Setup:
+
+-  After setting up your Socket.io server, integrate the socketHandle function to manage incoming and outgoing messages related to query state synchronization.
 
 ```javascript
 import { socketHandle } from "react-query-external-dash";
@@ -81,29 +80,18 @@ import { socketHandle } from "react-query-external-dash";
   socketHandle({ io });
 ```
 
-- **socketHandle**: Will handle all messages to and from clients to sync query state.
-- **io**: Returned value from calling  new SocketIOServer
-- ```javascript
-  // Example code to Initialize Socket.IO server with CORS configuration
-  const io = new SocketIOServer(httpServer, {
-    cors: {
-      origin: "http://localhost:3000", // Frontend URL
-      methods: ["GET", "POST"],
-    },
-  });
-  
-```
+- **io**:  The Socket.IO server instance.
 
-## Displaying React Query dev tools
+## React Query Dev Tools Integration:
 
-- Import and use the ExternalDevTools component where you want this tool to be rendered:
+- Incorporate the ExternalDevTools component within your server-side dashboard to display and interact with the synchronized React Query states.
 
 ```javascript
 import { ExternalDevTools } from "react-query-external-dash";
 
    <ExternalDevTools
       query={{
-        clientType: "server",// Client Type needs to be server as this is the server client dashboard.
+        clientType: "server",
         username: "Admin",
         userType: "admin",
       }}
@@ -111,3 +99,7 @@ import { ExternalDevTools } from "react-query-external-dash";
     />
 
 ```
+
+## Contribution
+
+I welcome contributions, feedback, and bug reports. Feel free to open an issue or pull request on this GitHub repository.
