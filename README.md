@@ -38,7 +38,7 @@ const { connect, disconnect, isConnected, queries, socket, users } =
       query: {
         username: "myUsername",
         userType: "User", // Role of the user
-        clientType: "browser", // Browser | Server Dashboard
+        clientType: "client", // client | server
       },
       queryClient,
       socketURL: "http://localhost:4000",
@@ -50,7 +50,7 @@ const { connect, disconnect, isConnected, queries, socket, users } =
 
  ### Connecting to the Server
 
-Use the `connect` function to establish a connection to the socket server. Check the connection status with `isConnected`. This will allow the current app to automatically sync all data between itself and the remote dev tools.
+Use the `connect` function to establish a connection to the socket server. Check the connection status with `isConnected`. This will allow the app to sync all data between itself and the external dev tools.
 
 ### Disconnecting from the Server
 
