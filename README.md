@@ -7,7 +7,7 @@ Welcome to **React Query External Sync**! This tool is designed for developers a
 ## Features
 
 - **Remote State Management**: Allows manipulation and observation of React Query state from an external dashboard.
-- **Cross-Platform Compatibility**: Ensures seamless functionality across all React-based platforms, including web and React Native.
+- **Cross-Platform Compatibility**: Ensures seamless functionality across all React-based platforms.
 - **Enhanced Testing Workflow**: Facilitates UI state testing by enabling external adjustments to API states, thus improving testing efficiency.
 
 ## Getting Started
