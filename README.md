@@ -4,7 +4,7 @@
 
 ## Introduction
 
-**React Query External Sync** is a dynamic tool for managing React Query state outside the usual confines of React Query Dev Tools. Ideal for React Native projects, it offers a live state management solution that's accessible to both developers and non-technical team members.
+**React Query External Sync** is a dynamic tool for managing React Query state outside the usual confines of React Query Dev Tools. Ideal for React Native projects, it offers a live state management solution that's accessible to both developers, qa and non-technical team members.
 
 ### Key Advantages:
 - **Real-time UI Updates**: Instantly see how state changes affect your application's UI without backend alterations.
