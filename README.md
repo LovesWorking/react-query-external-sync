@@ -1,14 +1,16 @@
 # React Query External Sync
 
+![react-query-external-preview](https://github.com/LovesWorking/LovesWorking/assets/111514077/e8c119cc-44bc-48ba-a398-dfba30e44396)
+
 ## Introduction
 
-Welcome to **React Query External Sync**! This tool is designed for developers and QA teams to remotely manage React Query state via an external dashboard. It's particularly beneficial for React Native projects, where React Query Dev Tools integration is absent.
+**React Query External Sync** is a dynamic tool for managing React Query state outside the usual confines of React Query Dev Tools. Ideal for React Native projects, it offers a live state management solution that's accessible to both developers and non-technical team members.
 
-## Features
-
-- **Remote State Management**: Allows manipulation and observation of React Query state from an external dashboard.
-- **Cross-Platform Compatibility**: Ensures seamless functionality across all React-based platforms.
-- **Enhanced Testing Workflow**: Facilitates UI state testing by enabling external adjustments to API states, thus improving testing efficiency.
+### Key Advantages:
+- **Real-time UI Updates**: Instantly see how state changes affect your application's UI without backend alterations.
+- **Broad Accessibility**: Enables all team members, including QA, designers, and business professionals, to tweak and test API-driven UI components on the fly.
+- **Continuous Evolution**: Built with expansion in mind, expect regular feature updates driven by community feedback and the evolving needs of modern development workflows.
+- **Enhanced Manipulation**: Future updates will introduce capabilities for precise state adjustments, such as directly inserting complete objects or arrays, object duplication, simultaneous state syncing across web, Android, and iOS and persistent state overrides, allowing values for specific data to remain until manually reverted.
 
 ## Getting Started
 
