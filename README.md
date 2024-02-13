@@ -95,7 +95,7 @@ import { ExternalDevTools } from "react-query-external-dash";
         username: "Admin",
         userType: "admin",
       }}
-      socketURL="http://localhost:4000"
+      socketURL="http://localhost:4000"// Use local ip if testing localy for Android ie http://192.168.4.21:4000
     />
 
 ```
