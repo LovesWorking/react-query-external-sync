@@ -83,6 +83,29 @@ import { socketHandle } from "react-query-external-dash";
 ```
 
 - **io**:  The Socket.IO server instance.
+- **Basic socket io Nodejs server example**:
+
+```javascript
+  const { socketHandle } = require("react-query-external-dash");
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+const app = express();
+const server = http.createServer(app);
+// Configure CORS policy for Socket.IO
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Accept connections from any origin
+    methods: ["GET", "POST"],
+  },
+});
+socketHandle({ io });
+app.use(express.static("build"));
+const port = process.env.PORT || 4000;
+server.listen(port, () => console.log(`Server running on port ${port}`));
+
+
+```
 
 ## React Query Dev Tools Integration:
 
