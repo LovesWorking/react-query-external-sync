@@ -1,4 +1,5 @@
 # React Query External Sync
+ 🌴Looking for a web/mobile developer? I'm actively seeking my next opportunity. Feel free to message me on LinkedIn! https://www.linkedin.com/in/lovesworking/
 
 ![react-query-external-preview](https://github.com/LovesWorking/LovesWorking/assets/111514077/e8c119cc-44bc-48ba-a398-dfba30e44396)
 
