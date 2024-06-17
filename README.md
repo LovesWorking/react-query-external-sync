@@ -1,6 +1,6 @@
 # React Query External Sync
 
-React Query devtool synced with Socket.IO, to debug your react-query outstide your React.js app easily.
+React Query devtool synced with Socket.IO, to debug your react-query outstide your app easily.
 
 ## [Preview the devtool](https://github.com/LovesWorking/LovesWorking/assets/111514077/e8c119cc-44bc-48ba-a398-dfba30e44396)
 
