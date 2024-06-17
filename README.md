@@ -1,7 +1,8 @@
 # React Query External Sync
- 🌴Looking for a web/mobile developer? I'm actively seeking my next opportunity. Feel free to message me on LinkedIn! https://www.linkedin.com/in/lovesworking/
 
-![react-query-external-preview](https://github.com/LovesWorking/LovesWorking/assets/111514077/e8c119cc-44bc-48ba-a398-dfba30e44396)
+React Query devtool synced with Socket.IO, to debug your react-query outstide your React.js app easily.
+
+## [Preview the devtool](https://github.com/LovesWorking/LovesWorking/assets/111514077/e8c119cc-44bc-48ba-a398-dfba30e44396)
 
 ## Table of content
 
@@ -35,8 +36,6 @@
 - **Broad Accessibility**: Enables all team members, including QA, designers, and business professionals, to tweak and test API-driven UI components on the fly.
 - **Continuous Evolution**: Built with expansion in mind, expect regular feature updates driven by community feedback and the evolving needs of modern development workflows.
 - **Enhanced Manipulation**: Future updates will introduce capabilities for precise state adjustments, such as directly inserting complete objects or arrays, object duplication, simultaneous state syncing across web, Android, and iOS and persistent state overrides, allowing values for specific data to remain until manually reverted.
-
-<hr>
 
 ## Prerequisites
 
@@ -184,3 +183,9 @@ services:
 ## Contribution
 
 I welcome contributions, feedback, and bug reports. Feel free to open an issue or pull request on this GitHub repository.
+
+<br>
+<hr>
+<br>
+
+🌴Looking for a web/mobile developer? I'm actively seeking my next opportunity. Feel free to message me on LinkedIn! https://www.linkedin.com/in/lovesworking/
