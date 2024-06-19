@@ -20,7 +20,7 @@ export default function handleCommands({
 }: Props) {
   const currentDataPath = [] as any; // NOT USED FOR DATA EXPLORER
   const query = allQueries.find(
-    (query) => query.queryKey[0] === command.queryKey
+    (query) => JSON.stringify(query.queryKey) === command.queryKey
   );
   if (!query) {
     console.error("Query not found");
