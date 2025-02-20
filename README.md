@@ -187,5 +187,3 @@ I welcome contributions, feedback, and bug reports. Feel free to open an issue o
 <br>
 <hr>
 <br>
-
-🌴Looking for a web/mobile developer? I'm actively seeking my next opportunity. Feel free to message me on LinkedIn! https://www.linkedin.com/in/lovesworking/
