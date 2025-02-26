@@ -2,7 +2,7 @@
 
 React Query devtool synced with Socket.IO, to debug your react-query outstide your app easily.
 
-## [Preview the devtool](https://github.com/LovesWorking/LovesWorking/assets/111514077/e8c119cc-44bc-48ba-a398-dfba30e44396)
+![rn-dev-tools-server](https://github.com/LovesWorking/LovesWorking/assets/111514077/48ac863f-956f-47ef-9d37-e2606bef91e4)
 
 ## Table of content
 
