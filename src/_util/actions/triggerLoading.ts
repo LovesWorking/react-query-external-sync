@@ -1,5 +1,4 @@
 import { Query } from "@tanstack/react-query";
-
 interface Props {
   query: Query;
 }
@@ -10,6 +9,14 @@ export default function triggerLoading({ query }: Props) {
     const previousQueryOptions = (query.state.fetchMeta as any)
       .__previousQueryOptions;
     if (previousQueryOptions) {
+      const previousState = query.state;
+      query.cancel({ silent: true });
+      query.setState({
+        ...previousState,
+        fetchStatus: "idle",
+        fetchMeta: null,
+      });
+
       // Refetch the query with the original options
       query.fetch(previousQueryOptions, {
         cancelRefetch: true, // This option will cancel the ongoing fetch (if any)
