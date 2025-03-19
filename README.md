@@ -177,7 +177,7 @@ services:
         environment:
             DT_PORT: ${RQ_DEVTOOLS_PORT}
             SOCKET_PORT: ${RQ_DEVTOOLS_SOCKET_PORT}
-            SOCKET_CORS: "http://localhost:8102,http://localhost:5173"
+            CORS_ORIGINS: "http://localhost:8102,http://localhost:5173"
 ```
 
 ## Contribution
