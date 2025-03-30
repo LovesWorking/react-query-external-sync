@@ -17,13 +17,23 @@
     "url": "https://github.com/LovesWorking/react-query-external-sync"
   },
   "keywords": [
-    "react-query",
+    "expo",
+    "devtools",
     "tanstack",
-    "state management",
-    "dev tools",
-    "react native",
-    "QA",
-    "debugging"
+    "query",
+    "react-query",
+    "react-native",
+    "expo-react-native",
+    "expo-react-native-tanstack-query-devtools",
+    "tanstack-query",
+    "tanstack-query-devtools",
+    "tanstack-query-devtools-expo",
+    "tanstack-query-devtools-expo-react-native",
+    "tanstack-query-devtools-expo-plugin",
+    "tanstack-query-devtools-expo-plugin-react-native",
+    "tanstack-query-devtools-expo-plugin-webui",
+    "tanstack-query-devtools-expo-plugin-webui-react-native",
+    "React-Query-Dev-Tools"
   ],
   "author": "LovesWorking (https://github.com/LovesWorking)",
   "license": "MIT",
@@ -32,10 +42,11 @@
     "socket.io-client": "^4.7.4"
   },
   "peerDependencies": {
-    "@tanstack/react-query": "^5.17.19",
+    "@tanstack/react-query": "^4.0.0 || ^5.0.0",
     "react": "^18"
   },
   "devDependencies": {
+    "@tanstack/react-query": "^5.66.9",
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
     "@babel/preset-react": "^7.23.3",
