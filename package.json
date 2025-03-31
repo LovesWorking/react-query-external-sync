@@ -38,15 +38,21 @@
   "author": "LovesWorking (https://github.com/LovesWorking)",
   "license": "MIT",
   "dependencies": {
-    "fast-equals": "^5.0.1",
     "socket.io-client": "^4.7.4"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^4.0.0 || ^5.0.0",
-    "react": "^18"
+    "react": "^18 || ^19"
+  },
+  "peerDependenciesMeta": {
+    "react-native": {
+      "optional": true
+    },
+    "@react-native-async-storage/async-storage": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "@tanstack/react-query": "^5.66.9",
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
     "@babel/preset-react": "^7.23.3",
@@ -55,6 +61,7 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@tanstack/react-query": "^5.66.9",
     "@types/node": "^20.11.16",
     "@types/react": "^18.2.55",
     "rollup": "^4.9.6",

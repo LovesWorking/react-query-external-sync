@@ -12,11 +12,6 @@ export default {
       format: "esm",
     },
   ],
-  external: [
-    "react",
-    "fast-equals",
-    "socket.io-client",
-    "@tanstack/react-query",
-  ],
+  external: ["react", "socket.io-client", "@tanstack/react-query"],
   plugins: [terser()],
 };
