@@ -60,7 +60,7 @@ function shouldProcessMessage(
 /**
  * Verifies if the React Query version is compatible with dev tools
  */
-function checkVersion(queryClient: QueryClient) {
+function checkVersion(queryClient: QueryClient, enableDebugLogs = false) {
   // Basic version check
   const version = (
     queryClient as unknown as {
@@ -72,9 +72,11 @@ function checkVersion(queryClient: QueryClient) {
     !version.toString().startsWith("4") &&
     !version.toString().startsWith("5")
   ) {
-    console.warn(
-      "This version of React Query has not been tested with the dev tools plugin. Some features might not work as expected."
-    );
+    if (enableDebugLogs) {
+      console.warn(
+        "This version of React Query has not been tested with the dev tools plugin. Some features might not work as expected."
+      );
+    }
   }
 }
 
@@ -82,6 +84,12 @@ interface useSyncQueriesProps {
   queryClient: QueryClient;
   deviceName: string;
   socketURL: string;
+  /**
+   * When true, enables console logging of query sync operations
+   * Set to false to silence logs in production environments
+   * @default false
+   */
+  enableDebugLogs?: boolean;
 }
 
 /**
@@ -97,24 +105,40 @@ export function useSyncQueriesExternal({
   queryClient,
   deviceName,
   socketURL,
+  enableDebugLogs = false,
 }: useSyncQueriesProps) {
   const { connect, disconnect, isConnected, socket, users } = useMySocket({
     deviceName,
     socketURL,
+    enableDebugLogs,
   });
 
   // Use a ref to track previous connection state to avoid duplicate logs
   const prevConnectedRef = useRef(false);
 
+  // Utility function for conditional debug logging
+  const debugLog = (message: string, ...args: any[]) => {
+    if (enableDebugLogs) {
+      console.log(message, ...args);
+    }
+  };
+
+  // Utility function for conditional error logging
+  const debugError = (message: string, ...args: any[]) => {
+    if (enableDebugLogs) {
+      console.error(message, ...args);
+    }
+  };
+
   useEffect(() => {
-    checkVersion(queryClient);
+    checkVersion(queryClient, enableDebugLogs);
 
     // Only log connection state changes to reduce noise
     if (prevConnectedRef.current !== isConnected) {
       if (!isConnected) {
-        console.log(`[${deviceName}] Not connected to external dashboard`);
+        debugLog(`[${deviceName}] Not connected to external dashboard`);
       } else {
-        console.log(`[${deviceName}] Connected to external dashboard`);
+        debugLog(`[${deviceName}] Connected to external dashboard`);
       }
       prevConnectedRef.current = isConnected;
     }
@@ -128,7 +152,7 @@ export function useSyncQueriesExternal({
 
     // Handle initial state requests from dashboard
     const initialStateSubscription = socket.on("request-initial-state", () => {
-      console.log(`[${deviceName}] Dashboard is requesting initial state`);
+      debugLog(`[${deviceName}] Dashboard is requesting initial state`);
       const dehydratedState = Dehydrate(queryClient as unknown as QueryClient);
       const syncMessage: SyncMessage = {
         type: "dehydrated-state",
@@ -137,7 +161,7 @@ export function useSyncQueriesExternal({
         isOnlineManagerOnline: onlineManager.isOnline(),
       };
       socket.emit("query-sync", syncMessage);
-      console.log(
+      debugLog(
         `[${deviceName}] Sent initial state to dashboard (${dehydratedState.queries.length} queries)`
       );
     });
@@ -153,18 +177,16 @@ export function useSyncQueriesExternal({
           return;
         }
 
-        console.log(
-          `[${deviceName}] Received online-manager action: ${action}`
-        );
+        debugLog(`[${deviceName}] Received online-manager action: ${action}`);
 
         switch (action) {
           case "ACTION-ONLINE-MANAGER-ONLINE": {
-            console.log(`[${deviceName}] Set online state: ONLINE`);
+            debugLog(`[${deviceName}] Set online state: ONLINE`);
             onlineManager.setOnline(true);
             break;
           }
           case "ACTION-ONLINE-MANAGER-OFFLINE": {
-            console.log(`[${deviceName}] Set online state: OFFLINE`);
+            debugLog(`[${deviceName}] Set online state: OFFLINE`);
             onlineManager.setOnline(false);
             break;
           }
@@ -183,21 +205,19 @@ export function useSyncQueriesExternal({
           return;
         }
 
-        console.log(
+        debugLog(
           `[${deviceName}] Received query action: ${action} for query ${queryHash}`
         );
 
         const activeQuery = queryClient.getQueryCache().get(queryHash);
         if (!activeQuery) {
-          console.warn(
-            `[${deviceName}] Query with hash ${queryHash} not found`
-          );
+          debugError(`[${deviceName}] Query with hash ${queryHash} not found`);
           return;
         }
 
         switch (action) {
           case "ACTION-DATA-UPDATE": {
-            console.log(`[${deviceName}] Updating data for query:`, queryKey);
+            debugLog(`[${deviceName}] Updating data for query:`, queryKey);
             queryClient.setQueryData(queryKey, data, {
               updatedAt: Date.now(),
             });
@@ -205,7 +225,7 @@ export function useSyncQueriesExternal({
           }
 
           case "ACTION-TRIGGER-ERROR": {
-            console.log(
+            debugLog(
               `[${deviceName}] Triggering error state for query:`,
               queryKey
             );
@@ -224,7 +244,7 @@ export function useSyncQueriesExternal({
             break;
           }
           case "ACTION-RESTORE-ERROR": {
-            console.log(
+            debugLog(
               `[${deviceName}] Restoring from error state for query:`,
               queryKey
             );
@@ -233,7 +253,7 @@ export function useSyncQueriesExternal({
           }
           case "ACTION-TRIGGER-LOADING": {
             if (!activeQuery) return;
-            console.log(
+            debugLog(
               `[${deviceName}] Triggering loading state for query:`,
               queryKey
             );
@@ -260,7 +280,7 @@ export function useSyncQueriesExternal({
             break;
           }
           case "ACTION-RESTORE-LOADING": {
-            console.log(
+            debugLog(
               `[${deviceName}] Restoring from loading state for query:`,
               queryKey
             );
@@ -286,21 +306,21 @@ export function useSyncQueriesExternal({
             break;
           }
           case "ACTION-RESET": {
-            console.log(`[${deviceName}] Resetting query:`, queryKey);
+            debugLog(`[${deviceName}] Resetting query:`, queryKey);
             queryClient.resetQueries(activeQuery);
             break;
           }
           case "ACTION-REMOVE": {
-            console.log(`[${deviceName}] Removing query:`, queryKey);
+            debugLog(`[${deviceName}] Removing query:`, queryKey);
             queryClient.removeQueries(activeQuery);
             break;
           }
           case "ACTION-REFETCH": {
-            console.log(`[${deviceName}] Refetching query:`, queryKey);
+            debugLog(`[${deviceName}] Refetching query:`, queryKey);
             const promise = activeQuery.fetch();
             promise.catch((error) => {
               // Log fetch errors but don't propagate them
-              console.error(
+              debugError(
                 `[${deviceName}] Refetch error for ${queryHash}:`,
                 error
               );
@@ -308,17 +328,17 @@ export function useSyncQueriesExternal({
             break;
           }
           case "ACTION-INVALIDATE": {
-            console.log(`[${deviceName}] Invalidating query:`, queryKey);
+            debugLog(`[${deviceName}] Invalidating query:`, queryKey);
             queryClient.invalidateQueries(activeQuery);
             break;
           }
           case "ACTION-ONLINE-MANAGER-ONLINE": {
-            console.log(`[${deviceName}] Setting online state: ONLINE`);
+            debugLog(`[${deviceName}] Setting online state: ONLINE`);
             onlineManager.setOnline(true);
             break;
           }
           case "ACTION-ONLINE-MANAGER-OFFLINE": {
-            console.log(`[${deviceName}] Setting online state: OFFLINE`);
+            debugLog(`[${deviceName}] Setting online state: OFFLINE`);
             onlineManager.setOnline(false);
             break;
           }
@@ -345,7 +365,7 @@ export function useSyncQueriesExternal({
 
     // Handle device info request - Send device info to dashboard
     const deviceInfoSubscription = socket.on("device-request", () => {
-      console.log(`[${deviceName}] Dashboard requested device info`);
+      debugLog(`[${deviceName}] Dashboard requested device info`);
       const syncMessage: DeviceInfoMessage = {
         deviceName,
       };
@@ -354,14 +374,14 @@ export function useSyncQueriesExternal({
 
     // Cleanup function to unsubscribe from all events
     return () => {
-      console.log(`[${deviceName}] Cleaning up event listeners`);
+      debugLog(`[${deviceName}] Cleaning up event listeners`);
       queryActionSubscription?.off();
       initialStateSubscription?.off();
       onlineManagerSubscription?.off();
       unsubscribe();
       deviceInfoSubscription?.off();
     };
-  }, [queryClient, socket, deviceName, isConnected]);
+  }, [queryClient, socket, deviceName, isConnected, enableDebugLogs]);
 
   return { connect, disconnect, isConnected, socket, users };
 }

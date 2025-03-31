@@ -11,6 +11,12 @@ import {
 interface Props {
   deviceName: string; // Unique name to identify the device
   socketURL: string; // Base URL of the socket server (may be modified based on platform)
+  /**
+   * When true, enables console logging of socket operations
+   * Set to false to silence logs in production environments
+   * @default false
+   */
+  enableDebugLogs?: boolean;
 }
 
 // Key for storing the persistent device ID in AsyncStorage
@@ -35,7 +41,9 @@ const generateDeviceId = (): string => {
 /**
  * Gets or creates a persistent device ID
  */
-const getOrCreateDeviceId = async (): Promise<string> => {
+const getOrCreateDeviceId = async (
+  enableDebugLogs = false
+): Promise<string> => {
   try {
     // Check if we already have the ID in memory
     if (deviceId) {
@@ -59,7 +67,9 @@ const getOrCreateDeviceId = async (): Promise<string> => {
     deviceId = newId;
     return newId;
   } catch (error) {
-    console.error("Failed to get/create device ID:", error);
+    if (enableDebugLogs) {
+      console.error("Failed to get/create device ID:", error);
+    }
     // Fallback to a temporary ID if storage fails
     const tempId = generateDeviceId();
     deviceId = tempId;
@@ -77,7 +87,11 @@ const getOrCreateDeviceId = async (): Promise<string> => {
  * - Connection state tracking
  * - User list management
  */
-export function useMySocket({ deviceName, socketURL }: Props) {
+export function useMySocket({
+  deviceName,
+  socketURL,
+  enableDebugLogs = false,
+}: Props) {
   const socketRef = useRef<Socket | null>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -90,22 +104,36 @@ export function useMySocket({ deviceName, socketURL }: Props) {
   // For logging clarity
   const logPrefix = `[${deviceName}]`;
 
+  // Utility function for conditional debug logging
+  const debugLog = (message: string, ...args: any[]) => {
+    if (enableDebugLogs) {
+      console.log(message, ...args);
+    }
+  };
+
+  // Utility function for conditional error logging
+  const debugError = (message: string, ...args: any[]) => {
+    if (enableDebugLogs) {
+      console.error(message, ...args);
+    }
+  };
+
   // Get the current platform
   const { name: currentPlatform } = getPlatform();
 
   // Define event handlers at function root level to satisfy linter
   const onConnect = () => {
-    console.log(`${logPrefix} Socket connected successfully`);
+    debugLog(`${logPrefix} Socket connected successfully`);
     setIsConnected(true);
   };
 
   const onDisconnect = (reason: string) => {
-    console.log(`${logPrefix} Socket disconnected. Reason: ${reason}`);
+    debugLog(`${logPrefix} Socket disconnected. Reason: ${reason}`);
     setIsConnected(false);
   };
 
   const onUsersUpdate = (newUsers: User[]) => {
-    console.log(
+    debugLog(
       `${logPrefix} Users updated:`,
       newUsers.map((u) => u.deviceName).join(", ")
     );
@@ -113,23 +141,23 @@ export function useMySocket({ deviceName, socketURL }: Props) {
   };
 
   const onConnectError = (error: Error) => {
-    console.error(`${logPrefix} Socket connection error:`, error.message);
+    debugError(`${logPrefix} Socket connection error:`, error.message);
   };
 
   const onConnectTimeout = () => {
-    console.error(`${logPrefix} Socket connection timeout`);
+    debugError(`${logPrefix} Socket connection timeout`);
   };
 
   // Get persistent device ID
   useEffect(() => {
     const fetchDeviceId = async () => {
-      const id = await getOrCreateDeviceId();
+      const id = await getOrCreateDeviceId(enableDebugLogs);
       setPersistentDeviceId(id);
-      console.log(`${logPrefix} Using persistent device ID: ${id}`);
+      debugLog(`${logPrefix} Using persistent device ID: ${id}`);
     };
 
     fetchDeviceId();
-  }, [logPrefix]);
+  }, [logPrefix, enableDebugLogs]);
 
   // Main socket initialization - runs only once
   useEffect(() => {
@@ -149,16 +177,14 @@ export function useMySocket({ deviceName, socketURL }: Props) {
     const platformUrl = getPlatformSpecificURL(socketURL);
     currentSocketURL = platformUrl;
 
-    console.log(
+    debugLog(
       `${logPrefix} Platform: ${currentPlatform}, using URL: ${platformUrl}`
     );
 
     try {
       // Use existing global socket or create a new one
       if (!globalSocketInstance) {
-        console.log(
-          `${logPrefix} Creating new socket instance to ${platformUrl}`
-        );
+        debugLog(`${logPrefix} Creating new socket instance to ${platformUrl}`);
         globalSocketInstance = socketIO(platformUrl, {
           autoConnect: true,
           query: {
@@ -170,7 +196,7 @@ export function useMySocket({ deviceName, socketURL }: Props) {
           transports: ["websocket"], // Prefer websocket transport for React Native
         });
       } else {
-        console.log(
+        debugLog(
           `${logPrefix} Reusing existing socket instance to ${platformUrl}`
         );
       }
@@ -185,7 +211,7 @@ export function useMySocket({ deviceName, socketURL }: Props) {
       // Check initial connection state
       if (socketRef.current.connected) {
         setIsConnected(true);
-        console.log(`${logPrefix} Socket already connected on init`);
+        debugLog(`${logPrefix} Socket already connected on init`);
       }
 
       // Set up event handlers
@@ -198,7 +224,7 @@ export function useMySocket({ deviceName, socketURL }: Props) {
       // Clean up event listeners on unmount but don't disconnect
       return () => {
         if (socketRef.current) {
-          console.log(`${logPrefix} Cleaning up socket event listeners`);
+          debugLog(`${logPrefix} Cleaning up socket event listeners`);
           socketRef.current.off("connect", onConnect);
           socketRef.current.off("disconnect", onDisconnect);
           socketRef.current.off("connect_error", onConnectError);
@@ -209,10 +235,10 @@ export function useMySocket({ deviceName, socketURL }: Props) {
         }
       };
     } catch (error) {
-      console.error(`${logPrefix} Failed to initialize socket:`, error);
+      debugError(`${logPrefix} Failed to initialize socket:`, error);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [persistentDeviceId]);
+  }, [persistentDeviceId, enableDebugLogs]);
 
   // Update the socket query parameters when deviceName changes
   useEffect(() => {
@@ -221,7 +247,7 @@ export function useMySocket({ deviceName, socketURL }: Props) {
       socketRef.current.io.opts.query &&
       persistentDeviceId
     ) {
-      console.log(`${logPrefix} Updating device name in socket connection`);
+      debugLog(`${logPrefix} Updating device name in socket connection`);
       socketRef.current.io.opts.query = {
         ...socketRef.current.io.opts.query,
         deviceName,
@@ -229,7 +255,13 @@ export function useMySocket({ deviceName, socketURL }: Props) {
         platform: currentPlatform,
       };
     }
-  }, [deviceName, logPrefix, persistentDeviceId, currentPlatform]);
+  }, [
+    deviceName,
+    logPrefix,
+    persistentDeviceId,
+    currentPlatform,
+    enableDebugLogs,
+  ]);
 
   // Update the socket URL when socketURL changes
   useEffect(() => {
@@ -242,7 +274,7 @@ export function useMySocket({ deviceName, socketURL }: Props) {
       currentSocketURL !== platformUrl &&
       persistentDeviceId
     ) {
-      console.log(
+      debugLog(
         `${logPrefix} Socket URL changed from ${currentSocketURL} to ${platformUrl}`
       );
 
@@ -251,7 +283,7 @@ export function useMySocket({ deviceName, socketURL }: Props) {
         socketRef.current.disconnect();
         currentSocketURL = platformUrl;
 
-        console.log(
+        debugLog(
           `${logPrefix} Creating new socket connection to ${platformUrl}`
         );
         globalSocketInstance = socketIO(platformUrl, {
@@ -268,20 +300,24 @@ export function useMySocket({ deviceName, socketURL }: Props) {
         socketRef.current = globalSocketInstance;
         setSocket(socketRef.current);
       } catch (error) {
-        console.error(
-          `${logPrefix} Failed to update socket connection:`,
-          error
-        );
+        debugError(`${logPrefix} Failed to update socket connection:`, error);
       }
     }
-  }, [socketURL, deviceName, logPrefix, persistentDeviceId, currentPlatform]);
+  }, [
+    socketURL,
+    deviceName,
+    logPrefix,
+    persistentDeviceId,
+    currentPlatform,
+    enableDebugLogs,
+  ]);
 
   /**
    * Manually connect to the socket server
    */
   function connect() {
     if (socketRef.current && !socketRef.current.connected) {
-      console.log(`${logPrefix} Manually connecting to socket server`);
+      debugLog(`${logPrefix} Manually connecting to socket server`);
       socketRef.current.connect();
     }
   }
@@ -291,7 +327,7 @@ export function useMySocket({ deviceName, socketURL }: Props) {
    */
   function disconnect() {
     if (socketRef.current && socketRef.current.connected) {
-      console.log(`${logPrefix} Manually disconnecting from socket server`);
+      debugLog(`${logPrefix} Manually disconnecting from socket server`);
       socketRef.current.disconnect();
     }
   }
