@@ -1,5 +1,6 @@
 import {
   DefaultError,
+  MutationKey,
   MutationMeta,
   MutationScope,
   MutationState,
@@ -7,18 +8,18 @@ import {
   QueryMeta,
   QueryObserverOptions,
   QueryState,
-  MutationKey,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query';
 // Define a simplified version of DehydratedState that both versions can work with
 export interface SimpleDehydratedState {
-  mutations: any[];
-  queries: any[];
+  mutations: unknown[];
+  queries: unknown[];
 }
 
 export interface SyncMessage {
-  type: "dehydrated-state";
+  type: 'dehydrated-state';
   state: DehydratedState;
   isOnlineManagerOnline: boolean;
+  deviceName: string;
 }
 
 export interface DehydratedState {
@@ -46,14 +47,8 @@ export interface ObserverState<
   TError = DefaultError,
   TData = TQueryFnData,
   TQueryData = TQueryFnData,
-  TQueryKey extends QueryKey = QueryKey
+  TQueryKey extends QueryKey = QueryKey,
 > {
   queryHash: string;
-  options: QueryObserverOptions<
-    TQueryFnData,
-    TError,
-    TData,
-    TQueryData,
-    TQueryKey
-  >;
+  options: QueryObserverOptions<TQueryFnData, TError, TData, TQueryData, TQueryKey>;
 }
