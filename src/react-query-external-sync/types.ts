@@ -8,7 +8,7 @@ import {
   QueryMeta,
   QueryObserverOptions,
   QueryState,
-} from '@tanstack/react-query';
+} from "@tanstack/react-query";
 // Define a simplified version of DehydratedState that both versions can work with
 export interface SimpleDehydratedState {
   mutations: unknown[];
@@ -16,10 +16,10 @@ export interface SimpleDehydratedState {
 }
 
 export interface SyncMessage {
-  type: 'dehydrated-state';
+  type: "dehydrated-state";
   state: DehydratedState;
   isOnlineManagerOnline: boolean;
-  deviceName: string;
+  persistentDeviceId: string;
 }
 
 export interface DehydratedState {
@@ -47,8 +47,23 @@ export interface ObserverState<
   TError = DefaultError,
   TData = TQueryFnData,
   TQueryData = TQueryFnData,
-  TQueryKey extends QueryKey = QueryKey,
+  TQueryKey extends QueryKey = QueryKey
 > {
   queryHash: string;
-  options: QueryObserverOptions<TQueryFnData, TError, TData, TQueryData, TQueryKey>;
+  options: QueryObserverOptions<
+    TQueryFnData,
+    TError,
+    TData,
+    TQueryData,
+    TQueryKey
+  >;
+}
+
+export interface User {
+  id: string;
+  deviceName: string;
+  deviceId: string; // Persisted device ID
+  platform?: string; // Device platform (iOS, Android, Web)
+  isConnected?: boolean; // Whether the device is currently connected
+  extraDeviceInfo?: string; // json string of additional device information as key-value pairs
 }
