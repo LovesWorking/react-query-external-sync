@@ -1,189 +1,181 @@
 # React Query External Sync
 
-React Query devtool synced with Socket.IO, to debug your react-query outstide your app easily.
+A powerful debugging tool for React Query state in any React-based application. Whether you're building for mobile, web, desktop, TV, or VR - this package has you covered. It works seamlessly across all platforms where React runs, with zero configuration to disable in production.
 
-![rn-dev-tools-server](https://github.com/LovesWorking/LovesWorking/assets/111514077/48ac863f-956f-47ef-9d37-e2606bef91e4)
+Pairs perfectly with [React Native DevTools](https://github.com/LovesWorking/rn-better-dev-tools) for a complete development experience.
 
-## Table of content
+![React Query External Sync Demo](https://github.com/user-attachments/assets/39e5c417-be4d-46af-8138-3589d73fce9f)
 
-- [Introduction](#introduction)
-    - [Key Advantages](#key-advantages)
-- [Prerequisites](#prerequisites)
-    - [Client Application](#client-application)
-    - [Socket IO Server](#socket-io-server)
-    - [Devtool Website](#devtool-website)
-- [Installation](#installation)
-    + [Client](#client)
-        - [1. Install the package](#1-install-the-package)
-        - [2. Connect your react-query to the socket](#2-connect-your-react-query-to-the-socket)
-        - [3. Usages](#3-usages)
-    + [Socket IO Server](#socket-io-server)
-        - [1. Install the package](#1-install-the-package-1)
-        - [2. Setup Socket IO](#2-setup-socket-io)
-    + [React Query Dev Tools Server](#react-query-dev-tools-server)
-- [Ready to use Docker image](#ready-to-use-docker-image)
-    - [1. Image link](#1-image-link)
-    - [2. Environment variables](#2-environment-variables)
-    - [3. Docker Compose example](#3-docker-compose-example)
-- [Contribution](#contribution)
+## ✨ Features
 
-## Introduction
+- 🔄 Real-time React Query state synchronization
+- 📱 Works with any React-based framework (React, React Native, Expo, Next.js, etc.)
+- 🖥️ Platform-agnostic: Web, iOS, Android, macOS, Windows, Linux, tvOS, VR - you name it!
+- 🔌 Socket.IO integration for reliable communication
+- 📊 Query status, data, and error monitoring
+- ⚡️ Simple integration with minimal setup
+- 🧩 Perfect companion to React Native DevTools
+- 🛑 Zero-config production safety - automatically disabled in production builds
 
-**React Query External Sync** is a dynamic tool for managing React Query state outside the usual confines of React Query Dev Tools. Ideal for React projects, it offers a live state management solution that's accessible to both developers, qa and non-technical team members.
-
-### Key Advantages:
-- **Real-time UI Updates**: Instantly see how state changes affect your application's UI without backend alterations.
-- **Broad Accessibility**: Enables all team members, including QA, designers, and business professionals, to tweak and test API-driven UI components on the fly.
-- **Continuous Evolution**: Built with expansion in mind, expect regular feature updates driven by community feedback and the evolving needs of modern development workflows.
-- **Enhanced Manipulation**: Future updates will introduce capabilities for precise state adjustments, such as directly inserting complete objects or arrays, object duplication, simultaneous state syncing across web, Android, and iOS and persistent state overrides, allowing values for specific data to remain until manually reverted.
-
-## Prerequisites
-
-### Client Application
-
-- React version 18 or above.
-- React Query version 5.17.19 or above.
-
-### Socket IO Server
-
-- Socket.io version 4.7.4 or above.
-
-### Devtool Website
-
-- Any react.js ready server (vite, rca, ...)
-
-## Installation
-
-### Client
-
-#### 1. Install the package
+## 📦 Installation
 
 ```bash
-npm install react-query-external-sync
+# Using npm
+npm install --save-dev react-query-external-sync socket.io-client
+
+# Using yarn
+yarn add -D react-query-external-sync socket.io-client
+
+# Using pnpm
+pnpm add -D react-query-external-sync socket.io-client
 ```
 
-#### 2. Connect your react-query to the socket
+## 🚀 Quick Start
 
-- Import the useAllQueries hook and utilize it within your client application to enable real-time synchronization with the external dashboard.
+Add the hook to your application where you set up your React Query context:
 
-```javascript
-import { useAllQueries } from "react-query-external-sync";
+```jsx
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useSyncQueriesExternal } from "react-query-external-sync";
+// Import Platform for React Native or use other platform detection for web/desktop
+import { Platform } from "react-native";
 
-const { connect, disconnect, isConnected, queries, socket, users } =
-    useAllQueries({
-      query: {
-        username: "myUsername",
-        userType: "User", // Role of the user
-        clientType: "client", // client | server
-      },
-      queryClient,
-      socketURL: "http://localhost:4000",
-    });
+// Create your query client
+const queryClient = new QueryClient();
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppContent />
+    </QueryClientProvider>
+  );
+}
+
+function AppContent() {
+  // Set up the sync hook - automatically disabled in production!
+  useSyncQueriesExternal({
+    queryClient,
+    socketURL: "http://localhost:42831", // Default port for React Native DevTools
+    deviceName: Platform?.OS || "web", // Platform detection
+    platform: Platform?.OS || "web", // Use appropriate platform identifier
+    deviceId: Platform?.OS || "web", // Use a PERSISTENT identifier (see note below)
+    extraDeviceInfo: {
+      // Optional additional info about your device
+      appVersion: "1.0.0",
+      // Add any relevant platform info
+    },
+    enableLogs: false,
+  });
+
+  // Your app content
+  return <YourApp />;
+}
 ```
 
-- **query**: Contains user information for identifying and managing connections in the dashboard.
-- **queryClient**: Your application's React Query client instance.
-- **socketURL**: The URL where your Socket.io server is hosted.
+## 🔒 Production Safety
 
-#### 3. Usages
+This package is automatically disabled in production builds.
 
-- `.connect()`: initiate a connection with the socket server
-- `.disconnect()`: terminate the connection to the socket server by invoking the disconnect function
-- `.isConnected`: monitor the connection status
-
-### Socket IO Server
-
-#### 1. Install the package
-
-```bash
-npm install react-query-external-dash
+```jsx
+// The package handles this internally:
+if (process.env.NODE_ENV !== "production") {
+  useSyncQueries = require("./new-sync/useSyncQueries").useSyncQueries;
+} else {
+  // In production, this becomes a no-op function
+  useSyncQueries = () => ({
+    isConnected: false,
+    connect: () => {},
+    disconnect: () => {},
+    socket: null,
+    users: [],
+  });
+}
 ```
 
-#### 2. Setup Socket IO
+## 💡 Usage with DevTools
 
-- After setting up your Socket.io server, integrate the socketHandle function to manage incoming and outgoing messages related to query state synchronization.
-- **Basic socket io Nodejs server example**:
+For the best experience, use this package with the [React Native DevTools](https://github.com/LovesWorking/rn-better-dev-tools) application:
 
-```javascript
-import { socketHandle } from "react-query-external-dash"
+1. Download and launch the DevTools application
+2. Integrate this package in your React application
+3. Start your application
+4. DevTools will automatically detect and connect to your running application
 
-import("socket.io").then(4000 => {
-    const io = new socketIO.Server(socketPort, {
-        cors: {
-            // This origin is the devtool (see next section), change the port to fit your needs.
-            // You'll also need to add the URL of your client if you have any CORS issue
-            origin: ["http://localhost:4001"],
-            credentials: true,
-        },
-    })
+> **Note**: For optimal connection, launch DevTools before starting your application.
 
-    socketHandle({ io })
+## ⚙️ Configuration Options
 
-    io.on("connection", client => {
-        console.log(`'${client.handshake.query.username}' connected`)
-    })
-})
+The `useSyncQueriesExternal` hook accepts the following options:
+
+| Option            | Type        | Required | Description                                                             |
+| ----------------- | ----------- | -------- | ----------------------------------------------------------------------- |
+| `queryClient`     | QueryClient | Yes      | Your React Query client instance                                        |
+| `socketURL`       | string      | Yes      | URL of the socket server (e.g., 'http://localhost:42831')               |
+| `deviceName`      | string      | Yes      | Human-readable name for your device                                     |
+| `platform`        | string      | Yes      | Platform identifier ('ios', 'android', 'web', 'macos', 'windows', etc.) |
+| `deviceId`        | string      | Yes      | Unique identifier for your device                                       |
+| `extraDeviceInfo` | object      | No       | Additional device metadata to display in DevTools                       |
+| `enableLogs`      | boolean     | No       | Enable console logging for debugging (default: false)                   |
+
+## 🐛 Troubleshooting
+
+### Quick Checklist
+
+1. **DevTools Connection**
+
+   - Look for "Connected" status in the top-left corner of the DevTools app
+   - If it shows "Disconnected", restart the DevTools app
+
+2. **No Devices Appearing**
+
+   - Verify the Socket.IO client is installed (`npm list socket.io-client`)
+   - Ensure the hook is properly set up in your app
+   - Check that `socketURL` matches the DevTools port (default: 42831)
+   - Restart both your app and the DevTools
+
+3. **Data Not Syncing**
+   - Confirm you're passing the correct `queryClient` instance
+   - Set `enableLogs: true` to see connection information
+
+That's it! If you're still having issues, visit the [GitHub repository](https://github.com/LovesWorking/react-query-external-sync/issues) for support.
+
+## ⚠️ Important Note About Device IDs
+
+The `deviceId` parameter must be **persistent** across app restarts and re-renders. Using a value that changes (like `Date.now()`) will cause each render to be treated as a new device.
+
+**Recommended approaches:**
+
+```jsx
+// Simple approach for single devices
+deviceId: Platform.OS, // Works if you only have one device per platform
+
+// Better approach for multiple simulators/devices of same type
+// Using AsyncStorage, MMKV, or another storage solution
+const [deviceId, setDeviceId] = useState(Platform.OS);
+
+useEffect(() => {
+  const loadOrCreateDeviceId = async () => {
+    // Try to load existing ID
+    const storedId = await AsyncStorage.getItem('deviceId');
+
+    if (storedId) {
+      setDeviceId(storedId);
+    } else {
+      // First launch - generate and store a persistent ID
+      const newId = `${Platform.OS}-${Date.now()}`;
+      await AsyncStorage.setItem('deviceId', newId);
+      setDeviceId(newId);
+    }
+  };
+
+  loadOrCreateDeviceId();
+}, []);
 ```
 
-### React Query Dev Tools Server
+## 📄 License
 
-- Incorporate the ExternalDevTools component within any React.JS ready server
-- **Basic react-vite server example** _(we suppose here that the port is 4001)_:
+MIT
 
-```javascript
-import React from "react"
-import ReactDOM from "react-dom/client"
-import { ExternalDevTools } from "react-query-external-dash"
+---
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-    <React.StrictMode>
-        <ExternalDevTools
-            socketURL={"http://localhost:4000"}
-            query={{
-                clientType: "server",
-                username: "Admin",
-                userType: "admin",
-            }}
-        />
-    </React.StrictMode>,
-)
-```
-
-## Ready to use Docker image
-
-If you don't want to setup both Socket.IO + Dedicated React.js server to monitor your app, a Docker image is available to launch those both services at once, with custom ports and CORS urls.
-
-### 1. Image link
-
-https://hub.docker.com/repository/docker/navalex/rq_devtool
-
-### 2. Environment variables
-
-- `SOCKET_PORT`: Port for the Socket.io server
-- `DT_PORT`: Port for the Vite server to access your devtool
-- `CORS_ORIGINS`: String to specify authorized url's for CORS in form of: "url1,url2,url3,..." (separate with coma without spaces). **Note that the devtool url is automaticly included in the CORS Policy.**
-
-### 3. Docker Compose example
-
-- You'll also need to open both ports to use this image. We suggest to define those in environment variables.
-
-```yaml
-services:
-    rqDevtools:
-        image: navalex/rq_devtool:latest
-        ports:
-            - ${RQ_DEVTOOLS_PORT}:${RQ_DEVTOOLS_PORT}
-            - ${RQ_DEVTOOLS_SOCKET_PORT}:${RQ_DEVTOOLS_SOCKET_PORT}
-        environment:
-            DT_PORT: ${RQ_DEVTOOLS_PORT}
-            SOCKET_PORT: ${RQ_DEVTOOLS_SOCKET_PORT}
-            SOCKET_CORS: "http://localhost:8102,http://localhost:5173"
-```
-
-## Contribution
-
-I welcome contributions, feedback, and bug reports. Feel free to open an issue or pull request on this GitHub repository.
-
-<br>
-<hr>
-<br>
+Made with ❤️ by [LovesWorking](https://github.com/LovesWorking)

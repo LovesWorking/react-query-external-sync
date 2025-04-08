@@ -1,7 +1,7 @@
 {
   "name": "react-query-external-sync",
   "version": "1.0.0",
-  "description": "A tool for syncing React Query state to an external React Query Dev Tools",
+  "description": "A tool for syncing React Query state to an external Dev Tools",
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
   "files": [
@@ -17,23 +17,42 @@
     "url": "https://github.com/LovesWorking/react-query-external-sync"
   },
   "keywords": [
-    "react-query",
+    "expo",
+    "devtools",
     "tanstack",
-    "state management",
-    "dev tools",
-    "react native",
-    "QA",
-    "debugging"
+    "query",
+    "react-query",
+    "react-native",
+    "expo-react-native",
+    "expo-react-native-tanstack-query-devtools",
+    "tanstack-query",
+    "tanstack-query-devtools",
+    "tanstack-query-devtools-expo",
+    "tanstack-query-devtools-expo-react-native",
+    "tanstack-query-devtools-expo-plugin",
+    "tanstack-query-devtools-expo-plugin-react-native",
+    "tanstack-query-devtools-expo-plugin-webui",
+    "tanstack-query-devtools-expo-plugin-webui-react-native",
+    "React-Query-Dev-Tools"
   ],
   "author": "LovesWorking (https://github.com/LovesWorking)",
   "license": "MIT",
-  "dependencies": {
-    "fast-equals": "^5.0.1",
-    "socket.io-client": "^4.7.4"
-  },
+  "dependencies": {},
   "peerDependencies": {
-    "@tanstack/react-query": "^5.17.19",
-    "react": "^18"
+    "@tanstack/react-query": "^4.0.0 || ^5.0.0",
+    "react": "^18 || ^19",
+    "socket.io-client": "*"
+  },
+  "peerDependenciesMeta": {
+    "react-native": {
+      "optional": true
+    },
+    "@react-native-async-storage/async-storage": {
+      "optional": true
+    },
+    "socket.io-client": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
@@ -44,6 +63,7 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@tanstack/react-query": "^5.66.9",
     "@types/node": "^20.11.16",
     "@types/react": "^18.2.55",
     "rollup": "^4.9.6",
