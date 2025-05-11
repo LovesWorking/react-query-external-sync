@@ -2,11 +2,11 @@ import { useEffect, useRef } from "react";
 import type { QueryKey } from "@tanstack/query-core";
 import { onlineManager, QueryClient } from "@tanstack/react-query";
 
+import { log } from "./utils/logger";
 import { Dehydrate } from "./hydration";
+import { PlatformOS } from "./platformUtils";
 import { SyncMessage } from "./types";
 import { useMySocket } from "./useMySocket";
-import { PlatformOS } from "./platformUtils";
-import { log } from "./utils/logger";
 
 /**
  * Query actions that can be performed on a query.
@@ -29,7 +29,9 @@ type QueryActions =
   | "ACTION-ONLINE-MANAGER-ONLINE" // Set online manager to online
   | "ACTION-ONLINE-MANAGER-OFFLINE" // Set online manager to offline
   // Internal action
-  | "success"; // Internal success action
+  | "success" // Internal success action
+  | "ACTION-CLEAR-MUTATION-CACHE" // Clear the mutation cache
+  | "ACTION-CLEAR-QUERY-CACHE"; // Clear the query cache
 
 /**
  * Message structure for query actions between dashboard and devices
@@ -270,6 +272,17 @@ export function useSyncQueriesExternal({
           `${logPrefix} Received query action: ${action} for query ${queryHash}`,
           enableLogs
         );
+        // If action is clear cache do the action here before moving on
+        if (action === "ACTION-CLEAR-MUTATION-CACHE") {
+          queryClient.getMutationCache().clear();
+          log(`${logPrefix} Cleared mutation cache`, enableLogs);
+          return;
+        }
+        if (action === "ACTION-CLEAR-QUERY-CACHE") {
+          queryClient.getQueryCache().clear();
+          log(`${logPrefix} Cleared query cache`, enableLogs);
+          return;
+        }
 
         const activeQuery = queryClient.getQueryCache().get(queryHash);
         if (!activeQuery) {
@@ -440,7 +453,15 @@ export function useSyncQueriesExternal({
       onlineManagerSubscription?.off();
       unsubscribe();
     };
-  }, [queryClient, socket, deviceName, isConnected, deviceId, enableLogs]);
+  }, [
+    queryClient,
+    socket,
+    deviceName,
+    isConnected,
+    deviceId,
+    enableLogs,
+    logPrefix,
+  ]);
 
   return { connect, disconnect, isConnected, socket };
 }
