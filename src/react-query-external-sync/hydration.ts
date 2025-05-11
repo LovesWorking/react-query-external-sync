@@ -49,6 +49,7 @@ function dehydrateMutation(mutation: Mutation): DehydratedMutation {
     mutationId: mutation.mutationId,
     mutationKey: mutation.options.mutationKey,
     state: mutation.state,
+    gcTime: mutation.gcTime,
     ...(mutation.options.scope && { scope: mutation.options.scope }),
     ...(mutation.meta && { meta: mutation.meta }),
   };
@@ -72,6 +73,7 @@ function dehydrateQuery(query: Query): DehydratedQuery {
     },
     queryKey: query.queryKey,
     queryHash: query.queryHash,
+    gcTime: query.gcTime,
     ...(query.meta && { meta: query.meta }),
     observers: observerStates,
   };
