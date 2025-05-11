@@ -33,6 +33,7 @@ export interface DehydratedMutation {
   state: MutationState;
   meta?: MutationMeta;
   scope?: MutationScope;
+  gcTime?: number;
 }
 export interface DehydratedQuery {
   queryHash: string;
@@ -41,6 +42,7 @@ export interface DehydratedQuery {
   promise?: Promise<unknown>;
   meta?: QueryMeta;
   observers: ObserverState[];
+  gcTime?: number;
 }
 export interface ObserverState<
   TQueryFnData = unknown,
