@@ -109,7 +109,9 @@ export function useMySocket({
             deviceName,
             deviceId: persistentDeviceId,
             platform,
-            extraDeviceInfo: JSON.stringify(extraDeviceInfo),
+            ...(extraDeviceInfo && Object.keys(extraDeviceInfo).length > 0
+              ? { extraDeviceInfo: JSON.stringify(extraDeviceInfo) }
+              : {}),
           },
           reconnection: false,
           transports: ["websocket"], // Prefer websocket transport for React Native
