@@ -6,14 +6,9 @@ import type {
   QueryClient,
   QueryFunction,
   QueryOptions,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query';
 
-import {
-  DehydratedMutation,
-  DehydratedQuery,
-  DehydratedState,
-  ObserverState,
-} from "./types";
+import { DehydratedMutation, DehydratedQuery, DehydratedState, ObserverState } from './types';
 type TransformerFn = (data: unknown) => unknown;
 
 export function Dehydrate(client: QueryClient): DehydratedState {
@@ -26,7 +21,6 @@ export function Dehydrate(client: QueryClient): DehydratedState {
     .getQueryCache()
     .getAll()
     .flatMap((query) => [dehydrateQuery(query)]);
-
   return { mutations, queries };
 }
 export interface DehydrateOptions {

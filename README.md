@@ -1,6 +1,6 @@
 # React Query External Sync
 
-A powerful debugging tool for React Query state in any React-based application. Whether you're building for mobile, web, desktop, TV, or VR - this package has you covered. It works seamlessly across all platforms where React runs, with zero configuration to disable in production.
+A powerful debugging tool for React Query state and device storage in any React-based application. Whether you're building for mobile, web, desktop, TV, or VR - this package has you covered. It works seamlessly across all platforms where React runs, with zero configuration to disable in production.
 
 Pairs perfectly with [React Native DevTools](https://github.com/LovesWorking/rn-better-dev-tools) for a complete development experience.
 
@@ -9,6 +9,7 @@ Pairs perfectly with [React Native DevTools](https://github.com/LovesWorking/rn-
 ## ✨ Features
 
 - 🔄 Real-time React Query state synchronization
+- 💾 **Device storage monitoring with CRUD operations** - MMKV, AsyncStorage, and SecureStorage
 - 📱 Works with any React-based framework (React, React Native, Expo, Next.js, etc.)
 - 🖥️ Platform-agnostic: Web, iOS, Android, macOS, Windows, Linux, tvOS, VR - you name it!
 - 🔌 Socket.IO integration for reliable communication
@@ -37,8 +38,10 @@ Add the hook to your application where you set up your React Query context:
 ```jsx
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useSyncQueriesExternal } from "react-query-external-sync";
-// Import Platform for React Native or use other platform detection for web/desktop
 import { Platform } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
+import { storage } from "./mmkv"; // Your MMKV instance
 
 // Create your query client
 const queryClient = new QueryClient();
@@ -52,19 +55,30 @@ function App() {
 }
 
 function AppContent() {
-  // Set up the sync hook - automatically disabled in production!
+  // Unified storage queries and external sync - all in one hook!
   useSyncQueriesExternal({
     queryClient,
-    socketURL: "http://localhost:42831", // Default port for React Native DevTools
-    deviceName: Platform?.OS || "web", // Platform detection
-    platform: Platform?.OS || "web", // Use appropriate platform identifier
-    deviceId: Platform?.OS || "web", // Use a PERSISTENT identifier (see note below)
+    socketURL: "http://localhost:42831",
+    deviceName: Platform.OS,
+    platform: Platform.OS,
+    deviceId: Platform.OS,
     extraDeviceInfo: {
-      // Optional additional info about your device
       appVersion: "1.0.0",
-      // Add any relevant platform info
     },
-    enableLogs: false,
+    enableLogs: true,
+    envVariables: {
+      NODE_ENV: process.env.NODE_ENV,
+    },
+    // Storage monitoring with CRUD operations
+    mmkvStorage: storage, // MMKV storage for ['#storage', 'mmkv', 'key'] queries + monitoring
+    asyncStorage: AsyncStorage, // AsyncStorage for ['#storage', 'async', 'key'] queries + monitoring
+    secureStorage: SecureStore, // SecureStore for ['#storage', 'secure', 'key'] queries + monitoring
+    secureStorageKeys: [
+      "userToken",
+      "refreshToken",
+      "biometricKey",
+      "deviceId",
+    ], // SecureStore keys to monitor
   });
 
   // Your app content
@@ -107,15 +121,20 @@ For the best experience, use this package with the [React Native DevTools](https
 
 The `useSyncQueriesExternal` hook accepts the following options:
 
-| Option            | Type        | Required | Description                                                             |
-| ----------------- | ----------- | -------- | ----------------------------------------------------------------------- |
-| `queryClient`     | QueryClient | Yes      | Your React Query client instance                                        |
-| `socketURL`       | string      | Yes      | URL of the socket server (e.g., 'http://localhost:42831')               |
-| `deviceName`      | string      | Yes      | Human-readable name for your device                                     |
-| `platform`        | string      | Yes      | Platform identifier ('ios', 'android', 'web', 'macos', 'windows', etc.) |
-| `deviceId`        | string      | Yes      | Unique identifier for your device                                       |
-| `extraDeviceInfo` | object      | No       | Additional device metadata to display in DevTools                       |
-| `enableLogs`      | boolean     | No       | Enable console logging for debugging (default: false)                   |
+| Option              | Type         | Required | Description                                                             |
+| ------------------- | ------------ | -------- | ----------------------------------------------------------------------- |
+| `queryClient`       | QueryClient  | Yes      | Your React Query client instance                                        |
+| `socketURL`         | string       | Yes      | URL of the socket server (e.g., 'http://localhost:42831')               |
+| `deviceName`        | string       | Yes      | Human-readable name for your device                                     |
+| `platform`          | string       | Yes      | Platform identifier ('ios', 'android', 'web', 'macos', 'windows', etc.) |
+| `deviceId`          | string       | Yes      | Unique identifier for your device                                       |
+| `extraDeviceInfo`   | object       | No       | Additional device metadata to display in DevTools                       |
+| `enableLogs`        | boolean      | No       | Enable console logging for debugging (default: false)                   |
+| `envVariables`      | object       | No       | Environment variables to sync with DevTools                             |
+| `mmkvStorage`       | MmkvStorage  | No       | MMKV storage instance for real-time monitoring                          |
+| `asyncStorage`      | AsyncStorage | No       | AsyncStorage instance for polling-based monitoring                      |
+| `secureStorage`     | SecureStore  | No       | SecureStore instance for secure data monitoring                         |
+| `secureStorageKeys` | string[]     | No       | Array of SecureStore keys to monitor (required if using secureStorage)  |
 
 ## 🐛 Troubleshooting
 
