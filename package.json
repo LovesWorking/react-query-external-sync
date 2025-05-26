@@ -1,6 +1,6 @@
 {
   "name": "react-query-external-sync",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "A tool for syncing React Query state to an external Dev Tools",
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
@@ -10,7 +10,14 @@
   "types": "dist/types/index.d.ts",
   "scripts": {
     "build": "tsc --outDir dist --declarationDir dist/types --declaration true && rollup -c rollup.config.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "version:patch": "npm version patch",
+    "version:minor": "npm version minor",
+    "version:major": "npm version major",
+    "prepublishOnly": "npm run build",
+    "release:patch": "npm run version:patch && npm publish",
+    "release:minor": "npm run version:minor && npm publish",
+    "release:major": "npm run version:major && npm publish"
   },
   "repository": {
     "type": "git",
