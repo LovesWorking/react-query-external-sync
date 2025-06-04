@@ -6,6 +6,9 @@ Pairs perfectly with [React Native DevTools](https://github.com/LovesWorking/rn-
 
 ![React Query External Sync Demo](https://github.com/user-attachments/assets/39e5c417-be4d-46af-8138-3589d73fce9f)
 
+### If you need internal React Query dev tools within the device you can use my other package here!
+https://github.com/LovesWorking/react-native-react-query-devtools
+
 ## ✨ Features
 
 - 🔄 Real-time React Query state synchronization
