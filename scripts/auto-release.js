@@ -11,7 +11,11 @@ const rl = readline.createInterface({
 function execCommand(command, description) {
   console.log(`\n🔄 ${description}...`);
   try {
-    const output = execSync(command, { encoding: "utf8", stdio: "inherit" });
+    const output = execSync(command, {
+      encoding: "utf8",
+      stdio: "inherit",
+      env: { ...process.env }, // Ensure environment variables are passed
+    });
     console.log(`✅ ${description} completed`);
     return output;
   } catch (error) {
@@ -30,6 +34,21 @@ function askQuestion(question) {
 
 async function main() {
   console.log("🚀 React Query External Sync - Automated Release\n");
+
+  // Check GitHub token availability
+  if (!process.env.GITHUB_TOKEN) {
+    console.log("⚠️  GITHUB_TOKEN not found in current environment.");
+    console.log(
+      "📝 GitHub releases will be skipped, but you can create them manually."
+    );
+    console.log(
+      "💡 To fix this for next time, restart your terminal after setting the token.\n"
+    );
+  } else {
+    console.log(
+      "✅ GitHub token found - releases will be created automatically\n"
+    );
+  }
 
   // Check if there are uncommitted changes
   try {
@@ -58,9 +77,9 @@ async function main() {
   }
 
   console.log("\n📦 What type of release is this?");
-  console.log("1. patch (2.2.0 → 2.2.1) - Bug fixes");
-  console.log("2. minor (2.2.0 → 2.3.0) - New features");
-  console.log("3. major (2.2.0 → 3.0.0) - Breaking changes");
+  console.log("1. patch (2.2.1 → 2.2.2) - Bug fixes");
+  console.log("2. minor (2.2.1 → 2.3.0) - New features");
+  console.log("3. major (2.2.1 → 3.0.0) - Breaking changes");
 
   const versionType = await askQuestion(
     "\n❓ Enter your choice (1/2/3 or patch/minor/major): "
@@ -115,14 +134,25 @@ async function main() {
     // Publish to npm
     execCommand("npm publish", "Publishing to npm");
 
-    // Create GitHub release
-    execCommand("npm run github:release", "Creating GitHub release");
+    // Create GitHub release (with better error handling)
+    if (process.env.GITHUB_TOKEN) {
+      execCommand("npm run github:release", "Creating GitHub release");
+    } else {
+      console.log("\n⚠️  Skipping GitHub release (no token available)");
+      console.log("💡 You can create it manually or restart terminal and run:");
+      console.log("   npm run github:release");
+    }
 
     console.log("\n🎉 Release completed successfully!");
     console.log("✅ Version bumped and committed");
     console.log("✅ Changes pushed to git");
     console.log("✅ Package published to npm");
-    console.log("✅ GitHub release created");
+
+    if (process.env.GITHUB_TOKEN) {
+      console.log("✅ GitHub release created");
+    } else {
+      console.log("⚠️  GitHub release skipped (restart terminal to fix)");
+    }
   } catch (error) {
     console.error("\n❌ Release failed:", error.message);
     process.exit(1);
