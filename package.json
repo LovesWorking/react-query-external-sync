@@ -15,9 +15,12 @@
     "version:minor": "npm version minor",
     "version:major": "npm version major",
     "prepublishOnly": "npm run build",
-    "release:patch": "npm run version:patch && npm publish",
-    "release:minor": "npm run version:minor && npm publish",
-    "release:major": "npm run version:major && npm publish"
+    "release:patch": "npm run version:patch && git push && git push --tags && npm publish && npm run github:release",
+    "release:minor": "npm run version:minor && git push && git push --tags && npm publish && npm run github:release",
+    "release:major": "npm run version:major && git push && git push --tags && npm publish && npm run github:release",
+    "release:auto": "node scripts/auto-release.js",
+    "github:release": "node scripts/github-release.js",
+    "pre-release": "git add . && git status"
   },
   "repository": {
     "type": "git",
