@@ -1,6 +1,6 @@
 {
   "name": "react-query-external-sync",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A tool for syncing React Query state to an external Dev Tools",
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
