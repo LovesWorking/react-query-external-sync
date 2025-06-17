@@ -45,13 +45,15 @@ export const isReactNative = (): boolean => {
  */
 export const getPlatformSpecificURL = (
   baseUrl: string,
-  platform: PlatformOS
+  platform: PlatformOS,
+  isDevice: boolean
 ): string => {
   try {
     const url = new URL(baseUrl);
 
     // For Android emulator, replace hostname with 10.0.2.2
     if (
+      !isDevice &&
       platform === "android" &&
       (url.hostname === "localhost" || url.hostname === "127.0.0.1")
     ) {

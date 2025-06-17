@@ -146,6 +146,12 @@ interface useSyncQueriesExternalProps {
    * @default false
    */
   enableLogs?: boolean;
+  /**
+   * Whether the app is running on a physical device or an emulator/simulator
+   * This can affect how the socket URL is constructed, especially on Android
+   * @default false
+   */
+  isDevice?: boolean; // Whether the app is running on a physical device
 
   /**
    * Storage instances for different storage types
@@ -312,6 +318,7 @@ export function useSyncQueriesExternal({
   platform,
   deviceId,
   enableLogs = false,
+  isDevice = false,
   storage,
   mmkvStorage,
   asyncStorage,
@@ -439,6 +446,7 @@ export function useSyncQueriesExternal({
     envVariables: mergedEnvVariables,
     platform,
     enableLogs,
+    isDevice,
   });
 
   useEffect(() => {
