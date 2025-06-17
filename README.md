@@ -133,6 +133,7 @@ The `useSyncQueriesExternal` hook accepts the following options:
 | `deviceId`          | string       | Yes      | Unique identifier for your device                                       |
 | `extraDeviceInfo`   | object       | No       | Additional device metadata to display in DevTools                       |
 | `enableLogs`        | boolean      | No       | Enable console logging for debugging (default: false)                   |
+| `isDevice`          | boolean      | No       | Set to true if this is a device (default: false)                        |
 | `envVariables`      | object       | No       | Environment variables to sync with DevTools                             |
 | `mmkvStorage`       | MmkvStorage  | No       | MMKV storage instance for real-time monitoring                          |
 | `asyncStorage`      | AsyncStorage | No       | AsyncStorage instance for polling-based monitoring                      |
