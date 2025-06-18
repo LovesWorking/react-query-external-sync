@@ -16,6 +16,12 @@ interface Props {
    * @default false
    */
   enableLogs?: boolean;
+   /**
+   * Whether the app is running on a physical device or an emulator/simulator
+   * This can affect how the socket URL is constructed, especially on Android
+   * @default false
+   */
+  isDevice?: boolean // Whether the app is running on a physical device
 }
 
 /**
@@ -43,6 +49,7 @@ export function useMySocket({
   envVariables,
   platform,
   enableLogs = false,
+  isDevice = false
 }: Props) {
   const socketRef = useRef<Socket | null>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -86,7 +93,7 @@ export function useMySocket({
     };
 
     // Get the platform-specific URL
-    const platformUrl = getPlatformSpecificURL(socketURL, platform);
+    const platformUrl = getPlatformSpecificURL(socketURL, platform, isDevice);
     currentSocketURL = platformUrl;
 
     try {
@@ -159,7 +166,7 @@ export function useMySocket({
   // Update the socket URL when socketURL changes
   useEffect(() => {
     // Get platform-specific URL for the new socketURL
-    const platformUrl = getPlatformSpecificURL(socketURL, platform);
+    const platformUrl = getPlatformSpecificURL(socketURL, platform, isDevice);
 
     // Compare with last known URL to avoid direct property access
     if (socketRef.current && currentSocketURL !== platformUrl && persistentDeviceId) {
