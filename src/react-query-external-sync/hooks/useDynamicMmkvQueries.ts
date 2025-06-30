@@ -47,7 +47,10 @@ export interface MmkvQueryResult {
 export function useDynamicMmkvQueries({ queryClient, storage }: UseDynamicMmkvQueriesOptions): MmkvQueryResult[] {
   // Get all MMKV keys
   const mmkvKeys = useMemo(() => {
-    return storage.getAllKeys();
+    const keys = storage.getAllKeys();
+    // Filter out React Query cache and other noisy keys
+    const filteredKeys = keys.filter((key) => !key.includes('REACT_QUERY_OFFLINE_CACHE'));
+    return filteredKeys;
   }, [storage]);
 
   // Helper function to get a single MMKV value
