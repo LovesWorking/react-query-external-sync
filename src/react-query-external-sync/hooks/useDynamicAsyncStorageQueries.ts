@@ -140,9 +140,6 @@ export function useDynamicAsyncStorageQueries({
           !filteredKeys.every((key) => asyncStorageKeys.includes(key));
 
         if (keysChanged) {
-          console.log('🔄 [AsyncStorage Hook] AsyncStorage keys changed!');
-          console.log('🔄 [AsyncStorage Hook] Old keys:', asyncStorageKeys.length);
-          console.log('🔄 [AsyncStorage Hook] New keys:', filteredKeys.length);
           setAsyncStorageKeys([...filteredKeys]); // Convert readonly array to mutable array
 
           // Invalidate all AsyncStorage queries to refresh data
@@ -174,7 +171,6 @@ export function useDynamicAsyncStorageQueries({
                 const valuesAreDifferent = JSON.stringify(currentValue) !== JSON.stringify(cachedData);
 
                 if (valuesAreDifferent) {
-                  console.log('🔄 [AsyncStorage Hook] Value changed for key:', key);
 
                   // Invalidate this specific query
                   queryClient.invalidateQueries({
