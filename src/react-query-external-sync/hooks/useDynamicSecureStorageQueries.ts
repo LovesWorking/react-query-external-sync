@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { QueryClient, useQueries } from '@tanstack/react-query';
 
 import { storageQueryKeys } from './storageQueryKeys';
+import isEqual from "fast-deep-equal";
 
 /**
  * SecureStore interface that matches expo-secure-store API
@@ -247,7 +248,7 @@ export function useDynamicSecureStorageQueries({
               // Only compare if we have cached data (avoid false positives after cache clear)
               if (cachedData !== undefined) {
                 // Deep comparison using a more robust method
-                const valuesAreDifferent = !deepEqual(currentValue, cachedData);
+                const valuesAreDifferent = !isEqual(currentValue, cachedData);
 
                 if (valuesAreDifferent) {
                   console.log('🔄 [SecureStore Hook] Value changed for key:', key);
@@ -308,24 +309,4 @@ export function useDynamicSecureStorageQueries({
   }
 
   return queries;
-}
-
-// Helper function for deep equality comparison
-function deepEqual(a: unknown, b: unknown): boolean {
-  if (a === b) return true;
-
-  if (a === null || b === null || a === undefined || b === undefined) {
-    return a === b;
-  }
-
-  if (typeof a !== typeof b) return false;
-
-  if (typeof a !== 'object') return a === b;
-
-  // For objects, use JSON comparison as fallback but handle edge cases
-  try {
-    return JSON.stringify(a) === JSON.stringify(b);
-  } catch {
-    return false;
-  }
 }

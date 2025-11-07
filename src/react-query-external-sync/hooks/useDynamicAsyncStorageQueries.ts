@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { QueryClient, useQueries } from '@tanstack/react-query';
-
+import isEqual from 'fast-deep-equal';
 import { storageQueryKeys } from './storageQueryKeys';
 
 /**
@@ -168,7 +168,7 @@ export function useDynamicAsyncStorageQueries({
               // Only compare if we have cached data (avoid false positives after cache clear)
               if (cachedData !== undefined) {
                 // Compare values (deep comparison for objects)
-                const valuesAreDifferent = JSON.stringify(currentValue) !== JSON.stringify(cachedData);
+                const valuesAreDifferent = !isEqual(currentValue, cachedData);
 
                 if (valuesAreDifferent) {
 
