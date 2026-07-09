@@ -1,8 +1,12 @@
 # React Query External Sync
 
+> **⚓ This project grew into [React Buoy](https://buoy.gg)** — a full suite of in-app devtools for React Native & Expo: network inspector, storage viewer, React Query devtools, state inspectors, performance monitor, a desktop dashboard, and an MCP server so AI agents like Claude Code and Cursor can debug your app. External sync lives on inside Buoy.
+>
+> 👉 **[buoy.gg](https://buoy.gg)** · **[Buoy-gg/buoy](https://github.com/Buoy-gg/buoy)** — this package still works and remains available for existing users.
+
 A powerful debugging tool for React Query state and device storage in any React-based application. Whether you're building for mobile, web, desktop, TV, or VR - this package has you covered. It works seamlessly across all platforms where React runs, with zero configuration to disable in production.
 
-Pairs perfectly with [React Native DevTools](https://github.com/LovesWorking/rn-better-dev-tools) for a complete development experience.
+Pairs perfectly with [Buoy Desktop](https://github.com/Buoy-gg/Buoy-Desktop) (formerly React Native DevTools) for a complete development experience.
 
 ![React Query External Sync Demo](https://github.com/user-attachments/assets/39e5c417-be4d-46af-8138-3589d73fce9f)
 
